@@ -1,5 +1,6 @@
 const express = require("express")
 const exphbs = require("express-handlebars")
+const req = require("express/lib/request")
 const mysql = require("mysql2")
 
 const app = express()
@@ -17,6 +18,24 @@ app.use(express.urlencoded({
 app.use(express.json())
 
 //rotas
+app.post('/completar',  (requisicao, resposta) => {
+    const id = requisicao.body.id
+
+    const sql = `
+        UPDATE tarefas
+        SET completa = '1'
+        WHERE id = ${id}
+    `
+
+    conexao.query(sql, (erro) => {
+        if (erro) {
+            return console.log(erro)
+        }
+
+        resposta.redirect('/')
+    })
+})
+
 app.post('/criar', (requisicao, resposta) => {
     const descricao = requisicao.body.descricao
     const completa = 0
